@@ -1,0 +1,33 @@
+# アプリを起動するための処理？
+version: '3'
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    # mac M1のため、追記
+    platform: linux/x86_64
+    volumes:
+    # ローカルとdockerを同期
+      - ./src/db/mysql_data:/var/lib/mysql
+    environment:
+    # 環境変数でパスワードの設定
+      MYSQL_ROOT_PASSWORD: password
+  web:
+    # 今いるディレクトリのdockerfileを参照
+    build: .
+    # 以前は、dockerfileに記載していた、サーバー起動
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    # 以前は、ターミナルで打ち込んでいた、同期処理
+    volumes:
+      - ./src:/app
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: development
+    # アプリとdbの連携
+    depends_on:
+      - db
+
+# ターミナルでコマンドを入力
+# docker compose buildで、まとめてimageを作成
+# docker compose upで、まとめてcontainerを作成し起動
