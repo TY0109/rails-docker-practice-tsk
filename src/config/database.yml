@@ -30,7 +30,7 @@ test:
   database: app_test
   # ローカルでテストを実行するときは、docker compose.ymlのdbを参照するが、circleciでテストを実行するときは、circleciのconfig.ymlで設定した値（127.0.0.1）を使用
   # circleciでは、docker compose使わないので、こういった別々の設定が必要
-  host: <%= ENV.fetch("APP_DATABASE_HOST"){'db'} %>
+  host: <%= ENV.fetch("APP_DATABASE_HOST"){ 'db' } %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
