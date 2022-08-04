@@ -1,0 +1,93 @@
+# 宣言
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.2
+  heroku: circleci/heroku@1.2.3
+
+# jobを定義
+jobs:
+  # ①ビルド
+  build:
+    docker:
+    # circleciの実行環境
+      - image: circleci/ruby:2.7
+    # githubのリポジトリ名に変更
+    working_directory: ~/rails-docker-practice-tsk/src
+    # 実際のjobの中身
+    steps:
+      # githubからソースコードをコピー
+      - checkout:
+          path: ~/rails-docker-practice-tsk
+      # bundle install 上記のorbsによりこの表記が可能になる
+      - ruby/install-deps
+  # ②テスト
+  test:
+    docker:
+      # circleciの実行環境
+      - image: circleci/ruby:2.7
+      # circleciのmysqlのバージョン
+      - image: circleci/mysql:5.5
+        # DBの環境変数(database.yml参照)
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: app_test
+          MYSQL_USER: root
+    # テストjob全体の環境変数
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      APP_DATABASE_HOST: "127.0.0.1"
+      RAILS_ENV: test
+    working_directory: ~/rails-docker-practice-tsk/src
+    # 実際のjobの中身
+    steps:
+      # コピー
+      - checkout:
+          path: rails-docker-practice-tsk
+      # bundle install
+      - ruby/install-deps
+      # DBのセットアップ
+      - run:
+          name: Database setup
+          command: bundle exec rails db:migrate
+      # testの実行
+      - run:
+          name: test
+          command: bundle exec rake test
+
+  # deploy:
+  #   docker:
+  #     - image: circleci/ruby:2.7
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker:
+  #         version: 19.03.13
+  #     - heroku/install
+  #     - run:
+  #         name: heroku login
+  #         command: heroku container:login
+  #     - run:
+  #         name: push docker image
+  #         command: heroku container:push web -a $HEROKU_APP_NAME
+  #     - run:
+  #         name: release docker image
+  #         command: heroku container:release web -a $HEROKU_APP_NAME
+  #     - run:
+  #         name: database setup
+  #         command: heroku run bundle exec rake db:migrate RAILS_ENV=production -a $HEROKU_APP_NAME
+
+workflows:
+  version: 2
+  build_test_and_deploy:
+  # jobを実行順に定義①build→②test
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      # - deploy:
+      #     requires:
+      #       - test
+      #     filters:
+      #       branches:
+      #         only: main
