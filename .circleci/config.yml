@@ -10,8 +10,7 @@ jobs:
   build:
     docker:
     # circleciの実行環境
-      - image: circleci/ruby:2.7.6
-
+      - image: circleci/ruby:2.7.6-stretch-node
     # githubのリポジトリ名に変更
     working_directory: ~/rails-docker-practice-tsk/src
     # 実際のjobの中身
@@ -25,8 +24,7 @@ jobs:
   test:
     docker:
       # circleciの実行環境
-      - image: circleci/ruby:2.7.6
-
+      - image: circleci/ruby:2.7.6-stretch-node
       # circleciのmysqlのバージョン
       - image: circleci/mysql:5.5
         # DBの環境変数(database.yml参照)
@@ -59,8 +57,7 @@ jobs:
 
   # deploy:
   #   docker:
-  #     - image: circleci/ruby:2.7.6
-
+  #     - image: circleci/ruby:2.7.6-stretch-node
   #   steps:
   #     - checkout
   #     - setup_remote_docker:
