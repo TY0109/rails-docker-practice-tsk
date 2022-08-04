@@ -1,5 +1,5 @@
 # アプリを生成するための処理？
-FROM ruby:2.7
+FROM ruby:2.7.6
 
 # 環境変数を設定
 ENV RAILS_ENV=production
