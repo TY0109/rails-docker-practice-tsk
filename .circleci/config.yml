@@ -52,11 +52,6 @@ jobs:
           command: bundle exec rails db:migrate
       # testの実行
       - run:
-          # 追記ここから
-          name: bundler install
-          command: |
-            gem install bundler
-          # 追記ここまで
           name: test
           command: bundle exec rake test
 
