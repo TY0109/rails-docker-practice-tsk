@@ -13,6 +13,10 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 WORKDIR /app
 # srcフォルダ（appフォルダとgemfile）を、docker側のディレクトリの配下に置く。
 COPY ./src /app
+
+# 追記
+RUN gem install bundler
+
 # bundle installでアプリ生成時に、gemもいくつか追加（それ以降はコマンドで手入力）
 RUN bundle config --local set path 'vendor/bundle' \
   && bundle install
