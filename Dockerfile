@@ -8,7 +8,9 @@ ENV RAILS_ENV=production
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update -qq \
-  && apt-get install -y nodejs yarn
+  && apt-get install -y nodejs yarn \
+  # vimのインストールを追記
+  && apt-get install -y vim
 # docker側のディレクトリを作成
 WORKDIR /app
 # srcフォルダ（appフォルダとgemfile）を、docker側のディレクトリの配下に置く。
