@@ -11,3 +11,10 @@ import "channels"
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+
+//bootstrap導入
+require("bootstrap");
+
+//scss導入
+import "../stylesheets/application.scss";
+

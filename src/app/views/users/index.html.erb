@@ -1,5 +1,14 @@
 <h1>ユーザ一覧</h1>
 <% @users.each do |user| %>
-  <%= user.name %>
+  <%= link_to user.name, user_path(user), class:"btn btn-success" %>
 <% end %>
+
+<!--jqueryテスト-->
+<p>テスト</p>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("p").text("成功！！");
+  });
+</script>
+
 
