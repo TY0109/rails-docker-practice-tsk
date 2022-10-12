@@ -19,18 +19,8 @@ jobs:
       - checkout:
           path: ~/rails-docker-practice-tsk
       # bundle install 上記のorbsによりこの表記が可能になる
-      # - ruby/install-deps
-      # ここから追記
-      # Restore cache
-      - restore_cache:
-          key: bundle-{{ checksum "Gemfile.lock" }}
-      # Install package
-      - run: bundle install --path vendor/bundle
-      # Save cache
-      - save_cache:
-          key: bundle-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+      - ruby/install-deps
+      
   # ②テスト
   test:
     docker:
