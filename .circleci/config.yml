@@ -55,6 +55,11 @@ jobs:
       - run:
           name: test
           command: bundle exec rake test
+      # 追記
+      - restore_cache:
+              keys:
+                - v1-dependencies-{{ checksum "src/Gemfile.lock" }}
+                - v1-dependencies-
       
   # deploy:
   #   docker:
