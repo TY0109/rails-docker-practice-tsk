@@ -2,7 +2,7 @@
 version: 2.1
 orbs:
   ruby: circleci/ruby@1.1.2
-  heroku: circleci/heroku@1.2.3
+  # heroku: circleci/heroku@1.2.3
 
 # jobを定義
 jobs:
@@ -20,6 +20,7 @@ jobs:
           path: ~/rails-docker-practice-tsk
       # bundle install 上記のorbsによりこの表記が可能になる
       - ruby/install-deps
+      
   # ②テスト
   test:
     docker:
@@ -43,7 +44,7 @@ jobs:
     steps:
       # コピー
       - checkout:
-          path: rails-docker-practice-tsk
+          path: ~/rails-docker-practice-tsk
       # bundle install
       - ruby/install-deps
       # DBのセットアップ
@@ -78,7 +79,7 @@ jobs:
 
 workflows:
   version: 2
-  build_test_and_deploy:
+  build_and_test:
   # jobを実行順に定義①build→②test
     jobs:
       - build

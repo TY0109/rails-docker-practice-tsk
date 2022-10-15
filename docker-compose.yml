@@ -15,8 +15,8 @@ services:
   web:
     # 今いるディレクトリのdockerfileを参照
     build: .
-    # 以前は、dockerfileに記載していた、サーバー起動
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    # 以前は、dockerfileに記載していた、サーバー起動。またalready  serever is 〜への対応も記載
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     # 以前は、ターミナルで打ち込んでいた、同期処理
     volumes:
       - ./src:/app
