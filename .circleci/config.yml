@@ -44,7 +44,7 @@ jobs:
     steps:
       # コピー
       - checkout:
-          path: rails-docker-practice-tsk
+          path: ~/rails-docker-practice-tsk
       # bundle install
       - ruby/install-deps
       # DBのセットアップ
@@ -55,25 +55,7 @@ jobs:
       - run:
           name: test
           command: bundle exec rake test
-          
-      - restore_cache:
-          key: circleci-docs-v1-{{ .Branch }}-<< parameters.dir >>-{{ checksum "Gemfile.lock" }}
-      - run:
-          name: Install Ruby dependencies
-          command:
-            |
-            if [[ "<< parameters.dir >>" != "" ]]; then
-              cd << parameters.dir >>
-            fi
-            #cmake is needed fo rugged, a gem dependency
-            sudo apt-get update && sudo apt-get install -y cmake
-            bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
-      - save_cache:
-          key: circleci-docs-v1-{{ .Branch }}-<< parameters.dir >>-{{ checksum "Gemfile.lock" }}
-          paths:
-            - "vendor/bundle"
-            - "<< parameters.dir >>/vendor/bundle"
-  
+
   # deploy:
   #   docker:
   #     - image: circleci/ruby:2.7
