@@ -55,6 +55,11 @@ jobs:
       - run:
           name: test
           command: bundle exec rake test
+      
+      - restore_cache:
+              keys:
+                # "composer.lock" can be used if it is committed to the repo
+                - v1-dependencies-{{ checksum "src/Gemfile.lock" }}
   
   # deploy:
   #   docker:
