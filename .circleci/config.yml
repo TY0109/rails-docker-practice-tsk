@@ -39,7 +39,7 @@ jobs:
       BUNDLE_RETRY: "3"
       APP_DATABASE_HOST: "127.0.0.1"
       RAILS_ENV: test
-    working_directory: ~/rails-docker-practice-tsk/src
+    working_directory: ~/rails-docker-practice-tsk
     # 実際のjobの中身
     steps:
       # コピー
@@ -55,11 +55,6 @@ jobs:
       - run:
           name: test
           command: bundle exec rake test
-      
-      - restore_cache:
-              keys:
-                # "composer.lock" can be used if it is committed to the repo
-                - v1-dependencies-{{ checksum "src/Gemfile.lock" }}
   
   # deploy:
   #   docker:
