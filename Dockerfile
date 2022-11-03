@@ -1,4 +1,3 @@
-# アプリを生成するための処理？
 FROM ruby:2.7.5
 
 # 環境変数を設定
@@ -31,3 +30,6 @@ COPY start.sh /start.sh
 RUN chmod 744 /start.sh
 # 実行コマンド
 CMD ["sh", "/start.sh"]
+
+# puma.sockを配置するディレクトリを作成
+RUN mkdir -p tmp/sockets
