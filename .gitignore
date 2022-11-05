@@ -38,4 +38,4 @@ src/.yarn-integrity
 src/db/mysql_data
 
 # 追記
-vendor/bundle
+vendor/bundlenode_modules
