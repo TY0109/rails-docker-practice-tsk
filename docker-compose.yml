@@ -13,20 +13,12 @@ services:
       MYSQL_ROOT_PASSWORD: password
   app:
     # 今いるディレクトリのdockerfileを参照
-    # build: .
-    build:
-      context: .
+    build: .
     # 以前は、dockerfileに記載していた、サーバー起動。またalready  serever is 〜への対応も記載
-    # command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    command: bundle exec puma -C config/puma.rb
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     # 以前は、ターミナルで打ち込んでいた、同期処理
     volumes:
       - ./src:/app
-      # nginxのために追加
-      - public-data:/app/public
-      - tmp-data:/app/tmp
-      - log-data:/app/log
-      - /myapp/node_modules
     ports:
       - "3000:3000"
     environment:
@@ -34,22 +26,10 @@ services:
     # アプリとdbの連携
     depends_on:
       - db
-  web:
-    build:
-      context: containers/nginx
-    volumes:
-      - public-data:/app/public
-      - tmp-data:/app/tmp
-    ports:
-      - 80:80
-    depends_on:
-      - app
+  
 
 
-volumes:
-  public-data:
-  tmp-data:
-  log-data:
+
 # ターミナルでコマンドを入力
 # docker compose buildで、まとめてimageを作成
 # docker compose upで、まとめてcontainerを作成し起動

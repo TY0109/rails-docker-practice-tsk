@@ -31,5 +31,4 @@ RUN chmod 744 /start.sh
 # 実行コマンド
 CMD ["sh", "/start.sh"]
 
-# puma.sockを配置するディレクトリを作成
-RUN mkdir -p tmp/sockets
+
