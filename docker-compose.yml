@@ -26,6 +26,9 @@ services:
     # アプリとdbの連携
     depends_on:
       - db
+  proxy:
+    image: registry.heroku.com/rails-docker-practice-tsk/web:0.1.0
+    build: .
   
 
 
