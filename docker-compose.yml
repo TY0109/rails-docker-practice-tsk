@@ -13,12 +13,20 @@ services:
       MYSQL_ROOT_PASSWORD: password
   app:
     # 今いるディレクトリのdockerfileを参照
-    build: .
+    # build: .
+    build:
+      context: .
     # 以前は、dockerfileに記載していた、サーバー起動。またalready  serever is 〜への対応も記載
-    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    # command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bundle exec puma -C config/puma.rb
     # 以前は、ターミナルで打ち込んでいた、同期処理
     volumes:
       - ./src:/app
+      # nginxのために追加
+      - public-data:/app/public
+      - tmp-data:/app/tmp
+      - log-data:/app/log
+      - /myapp/node_modules
     ports:
       - "3000:3000"
     environment:
@@ -26,10 +34,22 @@ services:
     # アプリとdbの連携
     depends_on:
       - db
-  proxy:
-    image: registry.heroku.com/rails-docker-practice-tsk/web:0.1.0
-    build: .
-  
+  web:
+    build:
+      context: containers/nginx
+    volumes:
+      - public-data:/app/public
+      - tmp-data:/app/tmp
+    ports:
+      - 80:80
+    depends_on:
+      - app
+volumes:
+  public-data:
+  tmp-data:
+  log-data:
+
+
 
 
 

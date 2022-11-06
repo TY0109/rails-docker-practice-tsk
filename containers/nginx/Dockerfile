@@ -1,13 +1,10 @@
-FROM openresty/openresty:1.13.6.1-1-alpine
+FROM nginx:1.15.8
 
-ENV PATH $PATH:/usr/sbin/
+# インクルード用のディレクトリ内を削除
+RUN rm -f /etc/nginx/conf.d/*
 
-COPY  nginx.conf.erb /usr/local/openresty/nginx/conf/nginx.conf.erb
+# Nginxの設定ファイルをコンテナにコピー
+ADD nginx.conf /etc/nginx/conf.d/app.conf
 
-COPY boot.sh /boot.sh
-RUN chmod +x /boot.sh
-
-RUN apk update \
-  && apk add ruby
-
-CMD ["/boot.sh"]
+# ビルド完了後にNginxを起動
+CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
