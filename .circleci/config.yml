@@ -1,0 +1,99 @@
+version: 2.1
+# rubyオーブは、Rubyプロジェクト向けのビルド、テスト、デプロイに関連するタスクを実行するための構成セットを提供する
+orbs:
+  ruby: circleci/ruby@1.1.2
+  # heroku: circleci/heroku@1.2.3
+
+# jobを定義
+jobs:
+  # ①ビルド
+  build:
+    docker:
+    # circleciの実行環境
+      # このimageをbuildして、コンテナを作成、起動させる
+      - image: circleci/ruby:2.7
+    working_directory: ~/rails-docker-practice-tsk/src
+    # jobの中身
+    steps:
+      - checkout:
+          path: ~/rails-docker-practice-tsk
+      # bundle install
+      # circleci/ruby:2.7をbuildして、コンテナを作成、起動させるだけでは、gemをインストールできないので、別途必要
+      - ruby/install-deps
+      # $ yarn installは？
+      
+  # ②テスト
+  test:
+    docker:
+      # circleciの実行環境
+      - image: circleci/ruby:2.7
+      - image: circleci/mysql:5.5
+        # test用DBの設置(環境変数にdatabase.ymlの値を設定)
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: app_test
+          MYSQL_USER: root
+    # テストjob全体の環境変数
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      # CI環境では"127.0.0.1"のコンテナに接続
+      APP_DATABASE_HOST: "127.0.0.1"
+      RAILS_ENV: test
+    working_directory: ~/rails-docker-practice-tsk/src
+    # jobの中身
+    steps:
+      # コピー
+      - checkout:
+          path: ~/rails-docker-practice-tsk
+      # bundle install
+      - ruby/install-deps
+      # DBのセットアップ
+      - run:
+          name: Database setup
+          command: bundle exec rails db:migrate
+      # testの実行
+      - run:
+          name: test
+          command: bundle exec rake test
+      # rspecの実行
+      - run:
+          name: Rspec
+          command: bundle exec rspec
+
+  # deploy:
+  #   docker:
+  #     - image: circleci/ruby:2.7
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker:
+  #         version: 19.03.13
+  #     - heroku/install
+  #     - run:
+  #         name: heroku login
+  #         command: heroku container:login
+  #     - run:
+  #         name: push docker image
+  #         command: heroku container:push web -a $HEROKU_APP_NAME
+  #     - run:
+  #         name: release docker image
+  #         command: heroku container:release web -a $HEROKU_APP_NAME
+  #     - run:
+  #         name: database setup
+  #         command: heroku run bundle exec rake db:migrate RAILS_ENV=production -a $HEROKU_APP_NAME
+
+workflows:
+  version: 2
+  build_and_test:
+  # jobを実行順に定義①build→②test
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      # - deploy:
+      #     requires:
+      #       - test
+      #     filters:
+      #       branches:
+      #         only: main
